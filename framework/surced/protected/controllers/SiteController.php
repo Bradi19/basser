@@ -5,6 +5,7 @@ class SiteController extends Controller
 	/**
 	 * Declares class-based actions.
 	 */
+	
 	public function actions()
 	{
 		return array(
@@ -27,9 +28,20 @@ class SiteController extends Controller
 	 */
 	public function actionIndex()
 	{
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('index');
+		$model=new LoginForm;
+		if(isset($_POST['LoginForm']))
+		{
+			$model->attributes=$_POST['LoginForm'];
+			// validate user input and redirect to the previous page if valid
+			if($model->validate() && $model->login())
+				$this->redirect(Yii::app()->user->returnUrl);
+		}
+		if(Yii::app()->user->isGuest){
+			$this->render('login',array('model'=>$model));
+		}else{
+			$this->redirect(array('tblProduct/index'));
+		}
+	
 	}
 
 	/**
